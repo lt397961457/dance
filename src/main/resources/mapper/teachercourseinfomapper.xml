@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dance.east.mapper.dance.TeacherCourseMapper">
+  <resultMap id="BaseResultMap" type="com.dance.east.entity.TeacherCourse">
+    <id column="id" jdbcType="BIGINT" property="ID" />
+    <result column="courseID" jdbcType="BIGINT" property="courseID" />
+    <result column="description" jdbcType="VARCHAR" property="desc" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+    <result column="teacherID" jdbcType="BIGINT" property="teacherID" />
+  </resultMap>
+  <select id="getAll" resultMap="BaseResultMap">
+    select * from teacher_course_info
+  </select>
+
+  <select id="queryByTeacherId" resultMap="BaseResultMap">
+    select * from teacher_course_info where  teacherID = #{teacherId}
+  </select>
+
+  <select id="queryByCourseId" resultMap="BaseResultMap">
+    select * from teacher_course_info where  courseID = #{courseId}
+  </select>
+</mapper>

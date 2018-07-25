@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dance.east.mapper.dance.TeacherImageMapper">
+  <resultMap id="BaseResultMap" type="com.dance.east.entity.TeacherImg">
+    <id column="id" jdbcType="BIGINT" property="ID" />
+    <result column="description" jdbcType="VARCHAR" property="desc" />
+    <result column="imageUrl" jdbcType="VARCHAR" property="imageUrl" />
+    <result column="isDeleted" jdbcType="BIT" property="isDeleted" />
+    <result column="isPrivacy" jdbcType="BIT" property="isPrivacy" />
+    <result column="level" jdbcType="INTEGER" property="level" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+    <result column="teacherID" jdbcType="BIGINT" property="teacherID" />
+  </resultMap>
+  <select id="getAll" resultMap="BaseResultMap">
+    select * from teacher_img;
+  </select>
+  <select id="queryByTeacherId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select * from teacher_img where teacherID = #{teacherId};
+  </select>
+  <select id="queyById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+     select * from teacher_img where ID = #{id};
+  </select>
+</mapper>

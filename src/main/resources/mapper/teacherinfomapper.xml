@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dance.east.mapper.dance.TeacherMapper">
+  <resultMap id="BaseResultMap" type="com.dance.east.entity.TeacherInfo">
+    <id column="id" jdbcType="BIGINT" property="ID" />
+    <result column="addr" jdbcType="VARCHAR" property="addr" />
+    <result column="description" jdbcType="VARCHAR" property="desc" />
+    <result column="identificationCard" jdbcType="VARCHAR" property="identificationCard" />
+    <result column="isMarried" jdbcType="TINYINT" property="isMarried" />
+    <result column="nickName" jdbcType="VARCHAR" property="nickName" />
+    <result column="sex" jdbcType="TINYINT" property="sex" />
+    <result column="teacherNO" jdbcType="VARCHAR" property="teacherNO" />
+    <result column="teacherName" jdbcType="VARCHAR" property="teacherName" />
+  </resultMap>
+
+  <select id="getAll" resultMap="BaseResultMap">
+    select * from teacher_info;
+  </select>
+
+  <select id="queryByName" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select * from teacher_info where teacherName LIKE CONCAT(CONCAT('%',#{teacherName},'%'))
+      OR  nickName LIKE CONCAT(CONCAT('%',#{teacherName},'%'));
+  </select>
+
+  <select id="queryByTeacherNo" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select * from teacher_info where teacherNO  LIKE CONCAT(CONCAT('%',#{teacherNO},'%'))
+  </select>
+
+  <select id="queryById"  parameterType="java.lang.Long" resultMap="BaseResultMap">
+     select * from teacher_info where ID = #{id}
+  </select>
+</mapper>

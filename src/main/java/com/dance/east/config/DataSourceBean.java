@@ -1,6 +1,8 @@
 package com.dance.east.config;
 
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
@@ -9,6 +11,7 @@ import org.springframework.context.annotation.Primary;
 
 import javax.sql.DataSource;
 @Configuration
+
 public class DataSourceBean {
 
     @Bean(name = "dataSourceDS2")

@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface UserService {
     public List<UserDetailVo> queryUserDetailByName(String userName);
+    public Boolean saveUserDetail(UserDetailVo vo);
 }

@@ -12,4 +12,5 @@ public interface UserMapper {
     public UserInfo queryById(Long id);
     public UserInfo queryByPhoneNum(String phoneNum);
     public List<UserInfo> queryByCondition(@Param(value = "paraMap")Map<String,Object> condition);
+    void saveUser(UserInfo userInfo);
 }

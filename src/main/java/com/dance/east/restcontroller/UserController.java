@@ -6,10 +6,8 @@ import com.dance.east.service.intf.UserService;
 import com.dance.east.vo.UserDetailVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.sql.DataSource;
 import java.util.List;
@@ -28,7 +26,6 @@ public class UserController {
     @Qualifier("dataSourceDS1")
     private DataSource dataSourceDS1;
 
-
     @Autowired
     private UserRepository userRepository;
 
@@ -39,5 +36,15 @@ public class UserController {
     @GetMapping("/byname2/{userName}")
     public UserInfo getUserInfoByName2(@PathVariable(value = "userName") String userName){
             return userRepository.findByUserName(userName);
+    }
+
+    @PostMapping("/save")
+    public Boolean saveUserDetail(@ModelAttribute UserDetailVo vo,@RequestParam("files")MultipartFile[] files){
+        return userService.saveUserDetail(vo);
+    }
+
+    @PostMapping("/save2")
+    public void saveUserDetail2( UserInfo info){
+        System.out.println(info);
     }
 }

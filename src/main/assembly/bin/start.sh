@@ -1,0 +1,1 @@
+java -jar east-0.0.1-SNAPSHOT.jar --spring.cofig.location=config/application.properties

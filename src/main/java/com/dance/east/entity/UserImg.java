@@ -1,8 +1,10 @@
 package com.dance.east.entity;
 
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
+import java.io.File;
 
 /**
  * 用户图片信息
@@ -42,4 +44,9 @@ public class UserImg {
      * 是否是隐私照片
      */
     private Boolean isPrivacy;
+    /**
+     * 实际照片，不映射到数据库
+     */
+    @Transient
+    private MultipartFile file;
 }

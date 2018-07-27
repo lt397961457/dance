@@ -38,6 +38,12 @@ public class UserController {
             return userRepository.findByUserName(userName);
     }
 
+    /**
+     *  不可以使用PUT 方式，不能自动将参数组装为对象
+     * @param vo
+     * @param files
+     * @return
+     */
     @PostMapping("/save")
     public Boolean saveUserDetail(@ModelAttribute UserDetailVo vo,@RequestParam("files")MultipartFile[] files){
         return userService.saveUserDetail(vo);

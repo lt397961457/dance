@@ -48,7 +48,6 @@ public class UserServiceImpl implements UserService{
                 return false;
             }
             userMapper.saveUser(userInfo);
-            int a = 1/0;
             List<UserImg> userImgs = vo.getImgs();
             if(userImgs != null && userImgs.size()>0){
                 Long userId = userInfo.getID();
@@ -59,10 +58,11 @@ public class UserServiceImpl implements UserService{
                 for(UserImg img : userImgs){
                     img.setUserId(userId);
                     InputStream is = img.getFile().getInputStream();
-                    OutputStream os = new FileOutputStream(rootPath + "/static/upload/"+img.getFile().getOriginalFilename());
+//                    OutputStream os = new FileOutputStream(rootPath + "/static/upload/" +img.getFile().getOriginalFilename());
+                    OutputStream os = new FileOutputStream("d:/boot_upload/" +img.getFile().getOriginalFilename());
 
                     IOUtils.copy(is,os);
-                    img.setImageUrl("/static/upload/"+img.getFile().getOriginalFilename());
+                    img.setImageUrl("/static/upload/" +img.getFile().getOriginalFilename());
                 }
                 userImageMapper.batchSave(userImgs);
             }

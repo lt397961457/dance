@@ -62,10 +62,10 @@ public class DynamicUserServiceImpl implements DynamicUserService {
                 for(UserImg img : userImgs){
                     img.setUserId(userId);
                     InputStream is = img.getFile().getInputStream();
-                    OutputStream os = new FileOutputStream(rootPath + "/static/upload/"+img.getFile().getOriginalFilename());
+                    OutputStream os = new FileOutputStream(rootPath + "/static/upload/" +img.getFile().getOriginalFilename());
 
                     IOUtils.copy(is,os);
-                    img.setImageUrl("/static/upload/"+img.getFile().getOriginalFilename());
+                    img.setImageUrl("/static/upload/" +img.getFile().getOriginalFilename());
                 }
                 dynamicUserImageMapper.batchSave(userImgs);
             }

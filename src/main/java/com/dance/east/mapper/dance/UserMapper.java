@@ -1,7 +1,7 @@
 package com.dance.east.mapper.dance;
 
 import com.dance.east.entity.UserInfo;
-import org.apache.ibatis.annotations.Mapper;
+import com.dance.east.utils.page.PageParam;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -13,4 +13,8 @@ public interface UserMapper {
     public UserInfo queryByPhoneNum(String phoneNum);
     public List<UserInfo> queryByCondition(@Param(value = "paraMap")Map<String,Object> condition);
     void saveUser(UserInfo userInfo);
+
+    List<UserInfo> queryByConditionWithPage(@Param(value = "pageParam")PageParam pageParam);
+
+    int countByCondition(@Param(value = "paraMap") Map<String, Object> params);
 }

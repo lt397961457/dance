@@ -5,6 +5,8 @@ import com.dance.east.entity.UserInfo;
 import com.dance.east.mapper.dance.UserImageMapper;
 import com.dance.east.mapper.dance.UserMapper;
 import com.dance.east.service.intf.UserService;
+import com.dance.east.utils.page.PageParam;
+import com.dance.east.utils.page.PageResult;
 import com.dance.east.vo.UserDetailVo;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,7 +64,7 @@ public class UserServiceImpl implements UserService{
                     OutputStream os = new FileOutputStream("d:/boot_upload/" +img.getFile().getOriginalFilename());
 
                     IOUtils.copy(is,os);
-                    img.setImageUrl("/static/upload/" +img.getFile().getOriginalFilename());
+                    img.setImageUrl("/static/" +img.getFile().getOriginalFilename());
                 }
                 userImageMapper.batchSave(userImgs);
             }
@@ -74,5 +76,28 @@ public class UserServiceImpl implements UserService{
             return false;
         }
         return true;
+    }
+
+    @Override
+    public PageResult<UserDetailVo> getUserWithPageToTable(PageParam pageParam) {
+        PageResult<UserDetailVo> result = new PageResult<UserDetailVo>();
+        List<UserInfo> userInfos = userMapper.queryByConditionWithPage(pageParam);
+        List<UserDetailVo> userVos = new ArrayList<>();
+        for(UserInfo info: userInfos){
+            UserDetailVo vo = new UserDetailVo();
+            vo.setUserInfo(info);
+            List<UserImg> imgs = userImageMapper.queryByUserId(info.getID());
+            vo.setImgs(imgs);
+            userVos.add(vo);
+        }
+        int total = userMapper.countByCondition(pageParam.getParams());
+//        result.setDraw(pageParam.getStart());
+        result.setData(userVos);
+        result.setCount(total);
+        result.setRecordsFiltered(total);
+        result.setRecordsTotal(total);
+        result.setCurrentPage(pageParam.getStart());
+
+        return result;
     }
 }

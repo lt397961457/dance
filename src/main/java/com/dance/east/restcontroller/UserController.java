@@ -3,6 +3,8 @@ package com.dance.east.restcontroller;
 import com.dance.east.entity.UserInfo;
 import com.dance.east.mapper.jpa.UserRepository;
 import com.dance.east.service.intf.UserService;
+import com.dance.east.utils.page.PageParam;
+import com.dance.east.utils.page.PageResult;
 import com.dance.east.vo.UserDetailVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -47,6 +49,26 @@ public class UserController {
     @PostMapping("/save")
     public Boolean saveUserDetail(@ModelAttribute UserDetailVo vo,@RequestParam("files")MultipartFile[] files){
         return userService.saveUserDetail(vo);
+    }
+
+    /**
+     * JSON请求形式的 的分页接口，前端未实现
+     * @param pageParam
+     * @return
+     */
+    @PostMapping("/page/all")
+    public PageResult<UserDetailVo> getAllWithPage(@RequestBody PageParam pageParam){
+        return userService.getUserWithPageToTable(pageParam);
+    }
+
+    /**
+     * 非JSON形式的分页请求接口
+     * @param pageParam
+     * @return
+     */
+    @PostMapping("/page/all2")
+    public PageResult<UserDetailVo> getAllWithPage2(PageParam pageParam){
+        return userService.getUserWithPageToTable(pageParam);
     }
 
     @PostMapping("/save2")

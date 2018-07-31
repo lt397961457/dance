@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../thirdpart/DataTables/datatables.min.css"/>
+
+    <script type="text/javascript" charset="utf8" src="../thirdpart/DataTables/jQuery-3.3.1/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="../thirdpart/DataTables/datatables.min.js"></script>
+    <title>用户列表</title>
+</head>
+<body>
+<table class="table table-bordered table-hover" id="areaListTable">
+    <thead>
+    <tr>
+        <th>编号</th>
+        <th>姓名</th>
+        <th>性别</th>
+        <th>电话</th>
+        <th>住址</th>
+        <th>爱好</th>
+        <th>图片</th>
+        <th>图片描述</th>
+    </tr>
+    </thead>
+    <tbody id="rewardBody">
+
+    </tbody>
+</table>
+<div id="imgdetailContainer" style="display: none;position: absolute" >
+    <img id="imgDetail" src="#"  style="width: 400px;height: 400px">
+</div>
+</body>
+
+<script>
+    function showImgDetail(obj) {
+        var e = event || window.event;
+        var x = e.clientX;
+        var y = e.clientY;
+        console.info(x + "--" + y)
+        console.info($(obj).attr("src"));
+        $("#imgDetail").attr("src",$(obj).attr("src")) ;
+        $("#imgdetailContainer").css("left",(x -400)+"px");
+        $("#imgdetailContainer").css("top",y+"px");
+        $("#imgdetailContainer").show() ;
+    }
+
+    function hideImageDetial(obj){
+        $("#imgdetailContainer").hide();
+    }
+
+    var mydata;
+    $(document).ready(function(){
+        initDatatable();
+    });
+
+    function ajaxData(param) {
+        $.ajax({
+            type: "POST",
+            url: "http://localhost:8080/user/page/all",
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(param),
+            dataType: 'json',
+            async : false,
+            success: function (message) {
+                console.info(message)
+                mydata =  message;
+            },
+            error: function (message) {
+                $("#request-process-patent").html("提交数据失败！");
+            }
+        });
+        return mydata;
+    }
+
+    function initDatatable() {
+
+        var dutyTable =  $("#areaListTable").dataTable({
+            "serverSide" : true,
+            "destroy" : true,       //销毁表格对象
+            "aLengthMenu":[5,10],  //用户可自选每页展示数量 5条或10条
+            "searching":false,//禁用搜索（搜索框）
+            "lengthChange":true,
+            "paging": true,//开启表格分页
+            // "bProcessing" : true,
+            "ajax": {  //ajax方式向后台发送请求
+                "type": "POST",
+                // "contentType": 'application/json;charset=UTF-8',
+                "url":"http://localhost:8080/user/page/all2",
+                // data: JSON.stringify(param),//传递的数据
+                "dataType" : "json"
+            },
+            // "data": mydata.data,
+            "columns" : [//对接收到的json格式数据进行处理，data为json中对应的key
+                {data : "userInfo.id"} ,
+                {data : "userInfo.userName"},
+                {
+                    data : "userInfo.sex",
+                    render : function(data,type, row, meta) {
+                        return (data == 1? "男":"女");
+                    }
+                },
+                {data : "userInfo.phoneNum"},
+                {data : "userInfo.addr"},
+                {data : "userInfo.faverate"},
+                {
+                    data : "imgs[0].imageUrl",
+                    render : function(data,type, row, meta) {
+                        return  "<img src=\""+data+"\" width=\"40px\" onmouseout='hideImageDetial(this)' onmouseover='showImgDetail(this)' />";
+                    }
+                },
+                {data : "imgs[0].desc"}
+
+            ],
+            /*是否开启主题*/
+            "bJQueryUI": true,
+            "oLanguage": {    // 语言设置
+                "sLengthMenu": "每页显示 _MENU_ 条记录",
+                "sZeroRecords": "抱歉， 没有找到",
+                "sInfo": "从 _START_ 到 _END_ /共 _TOTAL_ 条数据",
+                "sInfoEmpty": "没有数据",
+                "sInfoFiltered": "(从 _MAX_ 条数据中检索)",
+                "sZeroRecords": "没有检索到数据",
+                "sSearch": "检索:",
+                "oPaginate": {
+                    "sFirst": "首页",
+                    "sPrevious": "前一页",
+                    "sNext": "后一页",
+                    "sLast": "尾页"
+                }
+            }
+        });
+    }
+</script>
+</html>

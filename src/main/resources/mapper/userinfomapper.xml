@@ -35,24 +35,30 @@
   </select>
 
   <select id="queryByConditionWithPage" parameterType="com.dance.east.utils.page.PageParam" resultMap="BaseResultMap">
-    SELECT * from user_info where 1=1
+    SELECT * from user_info
     <if test="pageParam != null">
       <if test=" pageParam.params.size()>0">
-        <foreach collection="pageParam.params.keys" item="item">
-            and ${item} like  CONCAT(CONCAT('%',#{pageParam.params[${item}]},'%'))
-        </foreach>
+        <where>
+          <foreach collection="pageParam.params.keys" item="item" separator="or">
+             ${item} like  CONCAT(CONCAT('%',#{pageParam.params[${item}]},'%'))
+          </foreach>
+        </where>
+
       </if>
-      limit #{pageParam.start},#{pageParam.length}
+      limit #{pageParam.startPage},#{pageParam.rowLength}
     </if>
 
   </select>
 
   <select id="countByCondition" parameterType="java.util.Map" resultType="java.lang.Integer">
-    SELECT  count(1) from user_info where 1=1
+    SELECT  count(1) from user_info
+
     <if test="paraMap != null and  paraMap.size()>0">
-      <foreach collection="paraMap.keys" item="item">
-        and ${item} like  CONCAT(CONCAT('%',#{paraMap[${item}]},'%'))
-      </foreach>
+      <where>
+        <foreach collection="paraMap.keys" item="item" separator="or">
+          ${item} like  CONCAT(CONCAT('%',#{paraMap[${item}]},'%'))
+        </foreach>
+      </where>
     </if>
   </select>
 

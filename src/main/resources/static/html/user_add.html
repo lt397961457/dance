@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script type="text/javascript" src="../thirdpart/jquery-easyui-1.5.5.4/jquery.min.js"></script>
+    <script type="text/javascript" src="../thirdpart/jquery-easyui-1.5.5.4/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../thirdpart/jquery-easyui-1.5.5.4/locale/easyui-lang-zh_CN.js"></script>
+    <link rel="stylesheet" type="text/css" href="../thirdpart/jquery-easyui-1.5.5.4/themes/default/easyui.css"/>
+    <link rel="stylesheet" type="text/css" href="../thirdpart/jquery-easyui-1.5.5.4/themes/icon.css"/>
+    <link rel="stylesheet" type="text/css" href="../thirdpart/bootstrap-3.3.7/css/bootstrap.min.css"/>
+    <title>用户增加</title>
+</head>
+<body>
+
+<div >
+    <h1 class="text-center">添加用户</h1>
+    <form id="user_form" class="col-lg-offset-4" method="post" style="width:35%;"  enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="phoneNum">电话号码</label>
+            <input type="number" name="userInfo.phoneNum" class="form-control" id="phoneNum" placeholder="phone">
+        </div>
+        <div class="form-group">
+            <label for="userName">姓名</label>
+            <input type="text" name="userInfo.userName" class="form-control"  id="userName" placeholder="name">
+        </div>
+        <div class="form-group">
+            <label for="pwd">密码</label>
+            <input type="password" name="userInfo.pwd" class="form-control"  id="pwd" placeholder="password">
+        </div>
+        <div class="form-group">
+            <label for="addr">家庭地址</label>
+            <input type="text" name="userInfo.addr" class="form-control"  id="addr" placeholder="address">
+        </div>
+
+        <div class="form-group">
+            <label for="sex_div">性别: &nbsp;</label>
+            <label id="sex_div">
+                <input type="radio" value="1" name="userInfo.sex">男&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" checked  value="0"  name="userInfo.sex">女
+            </label>
+        </div>
+
+        <div id="imgscontainer">
+            <div class="form-group"  id="imgContainer_0" name="imgContainer_0" style="border: #00bbee solid 1px">
+                <div >
+                    <label >图片1</label>
+                    <input type="file" id="file_0" name="imgs[0].file" ><br>
+                    <input type="text" id="desc_0" style="width: 80%" class="form-control" name="imgs[0].desc"  placeholder="图片描述" ><br/>
+                    <label>隐私图片：</label>
+                    <label id="isPrivacy_0">
+                            <input type="radio" name="imgs[0].isPrivacy" value="1">是&nbsp;&nbsp;&nbsp;&nbsp;
+                            <input type="radio" name="imgs[0].isPrivacy" value="0">否
+                    </label>
+                </div>
+            </div>
+        </div>
+        <span class="glyphicon glyphicon-plus" id="add_img_btn"> 添加更多图片...</span><br><br><br>
+
+        <button id="sub_btn" type="button" class="btn btn-default">提交</button>
+    </form>
+
+</div>
+
+</body>
+<script type="text/javascript" >
+    var imgContainerCount = 1;
+
+    /**
+     * 复制 图片上传模块
+     */
+    function addImageContainer() {
+        var $oid_container = $("#imgContainer_0");
+        var $newContainer = $oid_container.clone();
+        $newContainer.attr("id","imgContainer_"+imgContainerCount);
+        var file = $( $newContainer.find("[id='file_0']"));
+
+         file.attr("id","file_"+imgContainerCount);
+         file.attr("name","imgs["+imgContainerCount+"].file");
+
+        var desc = $newContainer.find("[id='desc_0']");
+        desc.attr("id","desc_"+imgContainerCount);
+        desc.attr("name","imgs["+imgContainerCount+"].desc");
+
+        var isPrivacyContainer = $newContainer.find("[id='isPrivacy_0']").attr("id","isPrivacy_"+imgContainerCount);
+        isPrivacyContainer.children().attr("name","imgs["+imgContainerCount+"].isPrivacy");
+
+        // $oid_container.after($newContainer);
+        $("#imgscontainer").append($newContainer)
+        imgContainerCount++;
+        if(imgContainerCount>2){
+            $("#add_img_btn").unbind("click");
+            $("#add_img_btn").text(" 最多上传三张图片");
+            $("#add_img_btn").attr("class","glyphicon glyphicon-bookmark").css("color","#0000FF");
+        }
+    }
+    function addImgContainer() {
+        $("#add_img_btn").bind("click",addImageContainer);
+    }
+
+    $('#user_form').form({
+        url:"http://localhost:8080/user/save",
+
+        onSubmit: function(){
+
+        },
+        success:function(data){
+            // alert(data)
+        }
+        });
+
+
+    $(document).ready(function () {
+        $("#sub_btn").on("click",function () {
+            // 表单提交
+            $('#user_form').submit();
+        })
+        addImgContainer();
+    })
+</script>
+</html>

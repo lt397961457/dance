@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="../thirdpart/DataTables/datatables.min.css"/>
+    <link rel="stdsylesheet" type="text/css" href="../thirdpart/DataTables/DataTables-1.10.18/css/dataTables.bootstrap.css"/>
 
     <script type="text/javascript" charset="utf8" src="../thirdpart/DataTables/jQuery-3.3.1/jquery-3.3.1.min.js"></script>
     <script type="text/javascript" src="../thirdpart/DataTables/datatables.min.js"></script>
     <title>用户列表</title>
 </head>
 <body>
-<table class="table table-bordered table-hover" id="areaListTable">
+<table class="table table-striped table-bordered" id="areaListTable">
     <thead>
     <tr>
         <th>编号</th>
@@ -18,8 +19,8 @@
         <th>电话</th>
         <th>住址</th>
         <th>爱好</th>
-        <th>图片</th>
-        <th>图片描述</th>
+        <th>图片信息</th>
+        <!--<th>图片描述</th>-->
     </tr>
     </thead>
     <tbody id="rewardBody">
@@ -103,12 +104,21 @@
                 {data : "userInfo.addr"},
                 {data : "userInfo.faverate"},
                 {
-                    data : "imgs[0].imageUrl",
+                    data : "imgs",
                     render : function(data,type, row, meta) {
-                        return  "<img src=\""+data+"\" width=\"40px\" onmouseout='hideImageDetial(this)' onmouseover='showImgDetail(this)' />";
+                        var result = "<table>"
+                        if(data!=null && data.length>0){
+                            for(var i=0;i<data.length;i++){
+                                var oneData = "<tr><td><img src=\""+data[i].imageUrl+"\" width=\"40px\" onmouseout='hideImageDetial(this)' onmouseover='showImgDetail(this)' /></td>" +
+                                    "<td>"+data[i].desc+"</td></tr>"
+                                result = result + oneData;
+                            }
+                        }
+                        result = result + "</table>";
+                        return result;
                     }
                 },
-                {data : "imgs[0].desc"}
+                // {data : "imgs[0].desc"}
 
             ],
             /*是否开启主题*/

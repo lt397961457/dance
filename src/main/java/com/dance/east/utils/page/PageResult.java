@@ -8,8 +8,10 @@ import java.util.List;
 public class PageResult<T> {
 //    private int draw;
     private int count;
+    private int total;
     private int currentPage;
     private int recordsTotal;
     private int recordsFiltered;
     private List<T> data;
+    private List<T> rows;
 }

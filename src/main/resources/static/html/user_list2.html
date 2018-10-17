@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script type="text/javascript" src="../thirdpart/jquery-easyui-1.5.5.4/jquery.min.js"></script>
+    <script type="text/javascript" src="../thirdpart/jquery-easyui-1.5.5.4/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../thirdpart/jquery-easyui-1.5.5.4/locale/easyui-lang-zh_CN.js"></script>
+    <link rel="stylesheet" type="text/css" href="../thirdpart/jquery-easyui-1.5.5.4/themes/default/easyui.css"/>
+    <link rel="stylesheet" type="text/css" href="../thirdpart/jquery-easyui-1.5.5.4/themes/icon.css"/>
+    <link rel="stylesheet" type="text/css" href="../thirdpart/bootstrap-3.3.7/css/bootstrap.min.css"/>
+    <style type="text/css" rel="stylesheet">
+        #userAddContainer {
+            width: 100%;
+            z-index: 98;
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            background-color: rgba(130,255,247,0.57);
+        }
+        #subContainer{
+            width: 70%;
+            /*height: 600px;*/
+            z-index: 99;
+            position: relative;
+            top: 0px;
+            left: 15%;
+            background-color: #6b9cde;
+        }
+
+    </style>
+
+    <title>用户列表</title>
+</head>
+<body>
+<div id="tb">
+    <input type="text" name="standard.name" id="qName"/>
+    <a id="standardQueryBtn" href="javascript:void(0)" class="easyui-linkbutton"
+       data-options="iconCls:'icon-search'">搜索</a>
+    <a class="btn btn-primary" href="#" onclick="useradd()" role="button">新加用户</a>
+</div>
+<table width="100%" id="areaListTable">
+    <thead>
+    </thead>
+    <tbody id="rewardBody">
+    </tbody>
+</table>
+
+<div id="imgdetailContainer" style="display: none;position: absolute">
+    <img id="imgDetail" src="#" style="width: 400px;height: 400px">
+</div>
+
+<!-- 添加用户表格 -->
+<div id="userAddContainer" style="display: none">
+    <div id="subContainer">
+        <h1 class="text-center">添加用户</h1>
+        <form id="user_form" class="col-lg-offset-4" method="post" style="width:35%;" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="phoneNum">电话号码</label>
+                <input type="number" name="userInfo.phoneNum" class="form-control" id="phoneNum" placeholder="phone">
+            </div>
+            <div class="form-group">
+                <label for="userName">姓名</label>
+                <input type="text" name="userInfo.userName" class="form-control" id="userName" placeholder="name">
+            </div>
+            <div class="form-group">
+                <label for="pwd">密码</label>
+                <input type="password" name="userInfo.pwd" class="form-control" id="pwd" placeholder="password">
+            </div>
+            <div class="form-group">
+                <label for="addr">家庭地址</label>
+                <input type="text" name="userInfo.addr" class="form-control" id="addr" placeholder="address">
+            </div>
+
+            <div class="form-group">
+                <label for="sex_div">性别: &nbsp;</label>
+                <label id="sex_div">
+                    <input type="radio" value="1" name="userInfo.sex">男&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input type="radio" checked value="0" name="userInfo.sex">女
+                </label>
+            </div>
+
+            <div id="imgscontainer">
+                <div class="form-group" id="imgContainer_0" name="imgContainer_0" style="border: #00bbee solid 1px">
+                    <div>
+                        <label>图片1</label>
+                        <input type="file" id="file_0" name="imgs[0].file"><br>
+                        <input type="text" id="desc_0" style="width: 80%" class="form-control" name="imgs[0].desc"
+                               placeholder="图片描述"><br/>
+                        <label>隐私图片：</label>
+                        <label id="isPrivacy_0">
+                            <input type="radio" name="imgs[0].isPrivacy" value="1">是&nbsp;&nbsp;&nbsp;&nbsp;
+                            <input type="radio" name="imgs[0].isPrivacy" value="0">否
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <span class="glyphicon glyphicon-plus" id="add_img_btn"> 添加更多图片...</span><br><br><br>
+            <button type="button" id="sub_btn" class="btn btn-primary">提交</button>
+            <button id="return_btn" style="margin-left: 200px" type="button" class="btn btn-warning">返回</button>
+        </form>
+    </div>
+</div>
+
+</body>
+
+<script>
+    function useradd() {
+        $("#userAddContainer").show();
+    }
+
+    function showImgDetail(obj) {
+        var e = event || window.event;
+        var x = e.clientX;
+        var y = e.clientY;
+        $("#imgDetail").attr("src", $(obj).attr("src"));
+        $("#imgdetailContainer").css("left", (x - 400) + "px");
+        $("#imgdetailContainer").css("top", y + "px");
+        $("#imgdetailContainer").show();
+    }
+
+    function hideImageDetial(obj) {
+        $("#imgdetailContainer").hide();
+    }
+
+    /**
+     * 搜索框
+     **/
+    $("#standardQueryBtn").click(function () {
+        $("#areaListTable").datagrid("load", {
+            "params[userName]": $("#qName").val(),
+            "params[addr]": $("#qName").val(),
+            "params[phoneNum]": $("#qName").val(),
+            "params[faverate]": $("#qName").val(),
+        });
+    });
+
+    $(document).ready(function () {
+        $('#areaListTable').datagrid({
+            fitColumns: true,
+            pagination: true,     //开启分页
+            pageSize: 10,         //分页大小
+            pageNumber: 1,         //第几页显示（默认第一页，可以省略）
+            pageList: [10, 20, 30], //设置每页记录条数的列表
+            url: "http://localhost:8080/user/page/all2",
+            onLoadSuccess: function (data) {
+                console.info(data)
+            },
+            loadFilter: function (data) {
+                for (var i = 0; i < data.rows.length; i++) {
+                    /**
+                     * 当获取到的是一个对象 要再column里面展示其子属性，那么就必须使用一下方式处理，因为colums里面的field不能直接通过aaa.bb这种方式获取数据
+                     * 并且colums里面的field 不能重名
+                     */
+                    data.rows[i].id = data.rows[i].userInfo.id;
+                    data.rows[i].userName = data.rows[i].userInfo.userName;
+                    data.rows[i].sex = data.rows[i].userInfo.sex;
+                    data.rows[i].addr = data.rows[i].userInfo.addr;
+                    data.rows[i].phoneNum = data.rows[i].userInfo.phoneNum;
+                    data.rows[i].faverate = data.rows[i].userInfo.faverate;
+                }
+                console.info(data)
+                return data
+            },
+            columns: [[
+                {
+                    field: 'id', //不能重名
+                    title: "ID",
+                    width: 10
+                },
+                {
+                    field: 'userName',
+                    title: "姓名",
+                    width: 100
+                },
+                {
+                    field: 'sex',
+                    title: "性别",
+                    formatter: function (val) {
+                        return (val == 1 ? "男" : "女");
+                    },
+                    width: 100
+                },
+                {
+                    field: 'phoneNum',
+                    title: "电话号码",
+                    width: 100
+
+                },
+                {
+                    field: 'addr',
+                    title: "地址",
+                    width: 100
+                },
+                {
+                    field: 'faverate',
+                    title: "爱好",
+                    width: 100
+                },
+                {
+                    field: 'imgs',
+                    title: "图片信息",
+                    formatter: function (data, row) {
+                        var result = "<table>"
+                        if (data != null && data.length > 0) {
+                            for (var i = 0; i < data.length; i++) {
+                                var oneData = "<tr><td><img src=\"" + data[i].imageUrl + "\" width=\"40px\" onmouseout='hideImageDetial(this)' onmouseover='showImgDetail(this)' /></td>" +
+                                    "<td>" + data[i].desc + "</td></tr>"
+                                result = result + oneData;
+                            }
+                        }
+                        result = result + "</table>";
+                        return result;
+                    },
+                    width: 100
+                },
+                {
+                    field: 'operator',
+                    title: "操作",
+                    width: 100,
+                    formatter: function (val,row) {
+                        return "<button type=\"button\" class=\"btn btn-danger\">删除</button>"+"<button type=\"button\" style='margin-left: 2px' class=\"btn btn-info\">修改</button>";
+                    }
+                }
+            ]]
+        });
+    });
+
+
+    function initDatatable() {
+
+        var dutyTable = $("#areaListTable").dataTable({
+            "serverSide": true,
+            "destroy": true,       //销毁表格对象
+            "aLengthMenu": [5, 10],  //用户可自选每页展示数量 5条或10条
+            "searching": false,//禁用搜索（搜索框）
+            "lengthChange": true,
+            "paging": true,//开启表格分页
+            // "bProcessing" : true,
+            "ajax": {  //ajax方式向后台发送请求
+                "type": "POST",
+                // "contentType": 'application/json;charset=UTF-8',
+                "url": "http://localhost:8080/user/page/all2",
+                // data: JSON.stringify(param),//传递的数据
+                "dataType": "json"
+            },
+            // "data": mydata.data,
+            "columns": [//对接收到的json格式数据进行处理，data为json中对应的key
+                {data: "userInfo.id"},
+                {data: "userInfo.userName"},
+                {
+                    data: "userInfo.sex",
+                    render: function (data, type, row, meta) {
+                        return (data == 1 ? "男" : "女");
+                    }
+                },
+                {data: "userInfo.phoneNum"},
+                {data: "userInfo.addr"},
+                {data: "userInfo.faverate"},
+                {
+                    data: "imgs",
+                    render: function (data, type, row, meta) {
+                        var result = "<table>"
+                        if (data != null && data.length > 0) {
+                            for (var i = 0; i < data.length; i++) {
+                                var oneData = "<tr><td><img src=\"" + data[i].imageUrl + "\" width=\"40px\" onmouseout='hideImageDetial(this)' onmouseover='showImgDetail(this)' /></td>" +
+                                    "<td>" + data[i].desc + "</td></tr>"
+                                result = result + oneData;
+                            }
+                        }
+                        result = result + "</table>";
+                        return result;
+                    }
+                },
+                // {data : "imgs[0].desc"}
+
+            ],
+            /*是否开启主题*/
+            "bJQueryUI": true,
+            "oLanguage": {    // 语言设置
+                "sLengthMenu": "每页显示 _MENU_ 条记录",
+                "sZeroRecords": "抱歉， 没有找到",
+                "sInfo": "从 _START_ 到 _END_ /共 _TOTAL_ 条数据",
+                "sInfoEmpty": "没有数据",
+                "sInfoFiltered": "(从 _MAX_ 条数据中检索)",
+                "sZeroRecords": "没有检索到数据",
+                "sSearch": "检索:",
+                "oPaginate": {
+                    "sFirst": "首页",
+                    "sPrevious": "前一页",
+                    "sNext": "后一页",
+                    "sLast": "尾页"
+                }
+            }
+        });
+    }
+</script>
+
+<script type="text/javascript">
+    var imgContainerCount = 1;
+
+    /**
+     * 复制 图片上传模块
+     */
+    function addImageContainer() {
+        var $oid_container = $("#imgContainer_0");
+        var $newContainer = $oid_container.clone();
+        $newContainer.attr("id", "imgContainer_" + imgContainerCount);
+        var file = $($newContainer.find("[id='file_0']"));
+
+        file.attr("id", "file_" + imgContainerCount);
+        file.attr("name", "imgs[" + imgContainerCount + "].file");
+
+        var desc = $newContainer.find("[id='desc_0']");
+        desc.attr("id", "desc_" + imgContainerCount);
+        desc.attr("name", "imgs[" + imgContainerCount + "].desc");
+
+        var isPrivacyContainer = $newContainer.find("[id='isPrivacy_0']").attr("id", "isPrivacy_" + imgContainerCount);
+        isPrivacyContainer.children().attr("name", "imgs[" + imgContainerCount + "].isPrivacy");
+
+        // $oid_container.after($newContainer);
+        $("#imgscontainer").append($newContainer)
+        imgContainerCount++;
+        if (imgContainerCount > 2) {
+            $("#add_img_btn").unbind("click");
+            $("#add_img_btn").text(" 最多上传三张图片");
+            $("#add_img_btn").attr("class", "glyphicon glyphicon-bookmark").css("color", "#0000FF");
+        }
+    }
+
+    function addImgContainer() {
+        $("#add_img_btn").bind("click", addImageContainer);
+    }
+
+    $('#user_form').form({
+        url: "http://localhost:8080/user/save",
+        onSubmit: function () {
+            //提交前
+        },
+        success: function (data) {
+            // 提交成功后关闭新增用户的弹出层并且重置表单，以及重新加载表格
+            $("#userAddContainer").hide();
+            $("#areaListTable").datagrid("load");
+            $("#user_form").form("clear");
+        }
+    });
+
+
+    $(document).ready(function () {
+        $("#sub_btn").on("click", function () {
+            // 表单提交
+            $('#user_form').submit();
+        });
+        $("#return_btn").on("click",function(){
+            //返回按钮
+            $("#userAddContainer").hide();
+            $("#user_form").form("clear");
+        });
+        $("#userAddContainer").hide();
+        addImgContainer();
+    })
+</script>
+</html>

@@ -6,13 +6,19 @@ import com.dance.east.service.intf.UserService;
 import com.dance.east.utils.page.PageParam;
 import com.dance.east.utils.page.PageResult;
 import com.dance.east.vo.UserDetailVo;
+import com.fasterxml.jackson.annotation.JsonView;
+import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.sql.DataSource;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
 
 @RestController
 @RequestMapping("/user")
@@ -63,6 +69,7 @@ public class UserController {
 
     /**
      * 非JSON形式的分页请求接口
+     * 注意参数对象里面有MAP的需要这样写参数名：params[userName]
      * @param pageParam
      * @return
      */
@@ -75,4 +82,14 @@ public class UserController {
     public void saveUserDetail2( UserInfo info){
         System.out.println(info);
     }
+
+    @GetMapping("/jsonview")
+    @JsonView(UserDetailVo.MyView.class)
+    public UserDetailVo testJsonView(){
+        UserDetailVo vo = new UserDetailVo();
+        vo.setImgs(new ArrayList<>());
+        vo.setUserInfo(new UserInfo());
+        return vo;
+    }
+
 }

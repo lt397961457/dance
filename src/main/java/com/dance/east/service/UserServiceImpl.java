@@ -93,10 +93,12 @@ public class UserServiceImpl implements UserService{
         int total = userMapper.countByCondition(pageParam.getParams());
 //        result.setDraw(pageParam.getStart());
         result.setData(userVos);
+        result.setRows(userVos);
         result.setCount(total);
+        result.setTotal(total);
         result.setRecordsFiltered(total);
         result.setRecordsTotal(total);
-        result.setCurrentPage(pageParam.getStart());
+        result.setCurrentPage(pageParam.getStartPage());
 
         return result;
     }
